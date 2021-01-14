@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -13,8 +14,28 @@
 int init(SDL_Window **w, SDL_Renderer **r);
 void testStack();
 
-int main()
+int main(int argc, char *argv[])
 {
+    srand(time(NULL));
+
+    int nRows = 25;
+    int nCols = 40;
+    int cellW = 32;
+    int cellH = 32;
+
+    if(argc == 3)
+    {
+        nRows = atoi(argv[1]);
+        nCols = atoi(argv[2]);
+    }
+    else if(argc == 5)
+    {
+        nRows = atoi(argv[1]);
+        nCols = atoi(argv[2]);
+        cellW = atoi(argv[3]);
+        cellH = atoi(argv[4]);
+    }
+
     SDL_Window *window;
     SDL_Renderer *renderer;
 
@@ -28,7 +49,7 @@ int main()
     else
     {
         SDL_Event e;
-        Maze *maze = maze_create(renderer);
+        Maze *maze = maze_create(renderer, nRows, nCols, cellW, cellH);
 
         while(!quit)
         {
@@ -78,7 +99,7 @@ int init(SDL_Window **w, SDL_Renderer **r)
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
 
-    *w = SDL_CreateWindow("Maze Generator", SDL_WINDOWPOS_UNDEFINED_DISPLAY(0), SDL_WINDOWPOS_UNDEFINED_DISPLAY(0), SCREEN_W, SCREEN_H, SDL_WINDOW_SHOWN);
+    *w = SDL_CreateWindow("Maze Generator", SDL_WINDOWPOS_UNDEFINED_DISPLAY(1), SDL_WINDOWPOS_UNDEFINED_DISPLAY(1), SCREEN_W, SCREEN_H, SDL_WINDOW_SHOWN);
     if(!*w)
     {
         printf("FAIL: create window\n");
