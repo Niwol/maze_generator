@@ -25,13 +25,13 @@ int main(int argc, char *argv[])
 
     if(argc == 3)
     {
-        nRows = atoi(argv[1]);
-        nCols = atoi(argv[2]);
+        nRows = atoi(argv[2]);
+        nCols = atoi(argv[1]);
     }
     else if(argc == 5)
     {
-        nRows = atoi(argv[1]);
-        nCols = atoi(argv[2]);
+        nRows = atoi(argv[2]);
+        nCols = atoi(argv[1]);
         cellW = atoi(argv[3]);
         cellH = atoi(argv[4]);
     }

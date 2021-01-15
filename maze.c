@@ -8,8 +8,8 @@ SDL_Color FONT_COLOR = { 30, 255, 30, 255};
 enum 
 {
     WALL_UP,
-    WALL_DOWN,
     WALL_LEFT,
+    WALL_DOWN,
     WALL_RIGHT
 };
 
@@ -72,9 +72,9 @@ void createTexture(Maze *maze)
     if(maze->fontTexture)
         SDL_DestroyTexture(maze->fontTexture);
 
-    char text[100];
+    char text[200];
 
-    sprintf(text, "Rows %d  |  Cols %d  | Cell: W = %d ; H = %d", maze->config.nRows, maze->config.nCols, maze->config.cellW, maze->config.cellH);
+    sprintf(text, "Rows %d  |  Cols %d  | Cell: W = %d ; H = %d  |  Maze pos (%d , %d)", maze->config.nRows, maze->config.nCols, maze->config.cellW, maze->config.cellH, maze->posX, maze->posY);
 
     SDL_Surface *fontSurface = TTF_RenderText_Solid(maze->font, text, FONT_COLOR);
     maze->fontTexture = SDL_CreateTextureFromSurface(maze->renderer, fontSurface);
@@ -193,9 +193,21 @@ void maze_render(Maze *maze)
     if(maze)
     {
         // Maze
-        for(int i = 0; i < maze->nRows; i++)
+        int begX = -(maze->posX / maze->cellW);
+        int begY = -(maze->posY / maze->cellH);
+
+        int endX = begX + 1500 / maze->cellW + 1;
+        int endY = begY + 900 / maze->cellH + 1;
+
+        if(begX < 0) begX = 0;
+        if(begY < 0) begY = 0;
+
+        if(endX > maze->nCols) endX = maze->nCols;
+        if(endY > maze->nRows) endY = maze->nRows;
+
+        for(int i = begY; i < endY; i++)
         {
-            for(int j = 0; j < maze->nCols; j++)
+            for(int j = begX; j < endX - 1; j++)
             {
                 SDL_Rect cellRect = { j * maze->cellW + maze->posX, i * maze->cellH + maze->posY, maze->cellW, maze->cellH };
 
@@ -204,17 +216,19 @@ void maze_render(Maze *maze)
 
                 SDL_SetRenderDrawColor(maze->renderer, 0, 0, 0, 255);
 
-                for(int k = 0; k < 4; k++)
+                
+                for(int k = 0; k < 2; k++)
                 {
                     if(maze->cells[i][j].walls[k])
                         switch(k)
                         {
                             case WALL_UP:    SDL_RenderDrawLine(maze->renderer, cellRect.x             , cellRect.y             , cellRect.x + cellRect.w, cellRect.y             ); break;
-                            case WALL_DOWN:  SDL_RenderDrawLine(maze->renderer, cellRect.x             , cellRect.y + cellRect.h, cellRect.x + cellRect.w, cellRect.y + cellRect.h); break;
+                            //case WALL_DOWN:  SDL_RenderDrawLine(maze->renderer, cellRect.x             , cellRect.y + cellRect.h, cellRect.x + cellRect.w, cellRect.y + cellRect.h); break;
                             case WALL_LEFT:  SDL_RenderDrawLine(maze->renderer, cellRect.x             , cellRect.y             , cellRect.x             , cellRect.y + cellRect.h); break;
-                            case WALL_RIGHT: SDL_RenderDrawLine(maze->renderer, cellRect.x + cellRect.w, cellRect.y             , cellRect.x + cellRect.w, cellRect.y + cellRect.h); break;
+                            //case WALL_RIGHT: SDL_RenderDrawLine(maze->renderer, cellRect.x + cellRect.w, cellRect.y             , cellRect.x + cellRect.w, cellRect.y + cellRect.h); break;
                         }
                 }
+                
             }
         }
 
