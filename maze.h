@@ -8,6 +8,9 @@
 
 #include "stack.h"
 
+#define SCREEN_W 1500
+#define SCREEN_H 900
+
 typedef struct maze_s Maze;
 
 Maze *maze_create(SDL_Renderer *renderer, int nRows, int nCols, int cellW, int cellH);
